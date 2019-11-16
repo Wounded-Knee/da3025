@@ -20,3 +20,7 @@ main article {
 main > article {
 	display: block;
 }
+
+main article .rbt-sr-status {
+	display: none;
+}
