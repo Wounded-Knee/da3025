@@ -15,7 +15,6 @@ const conversation = {
     { id: 1004, authorId: 0, childId: 1001, parentId: 1003},
     { id: 1005, authorId: 1, text: 'That\'s a funny name...', parentId: 1003 },
 
-    { id: 2000, authorId: 0, text: 'There was a helicopter.'},
   ]
 };
 

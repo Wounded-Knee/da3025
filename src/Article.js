@@ -1,6 +1,16 @@
 import React from 'react';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useParams,
+  useRouteMatch,
+  withRouter,
+} from "react-router-dom";
 
 class Article extends React.Component {
   constructor(props) {
@@ -57,7 +67,16 @@ class Article extends React.Component {
   }
 
   render() {
-    const {nodeId, conversation} = this.props;
+    const { url } = this.props.match;
+    const { id: nodeId } = useParams();
+    const { conversation } = this.props;
+    return <div />;
+  }
+
+  xrender() {
+    const { url } = useRouteMatch();
+    const { id: nodeId } = useParams();
+    const { conversation } = this.props;
     const getNodeById = id => conversation.nodes.find(node => node.id === id);
     const getAuthorByNode = node => conversation.users.find(user => user.id === node.authorId);
     const thisNode = getNodeById(nodeId);
@@ -66,24 +85,28 @@ class Article extends React.Component {
     const author = getAuthorByNode(thisNode);
 
     return (
-      <article style={{ color: "#"+author.color }} title={ author.name }>
-        { thisNode.text }
-        &nbsp;
-        <Typeahead
-          id="nope"
-          multiple={ false }
-          emptyLabel={ false }
-          onKeyDown={ this.onKeyDown.bind(this) }
-          labelKey="text"
-          options={
-            choices
-          }
-          onInputChange={ this.onChange.bind(this) }
-          onChange={ this.onChange.bind(this) }
-        />
-      </article>
+      <Switch>
+        <Route path={ `${ url }/:id` }>
+          <article style={{ color: "#"+author.color }} title={ author.name }>
+            { thisNode.text }
+            &nbsp;
+            <Typeahead
+              id="nope"
+              multiple={ false }
+              emptyLabel={ false }
+              onKeyDown={ this.onKeyDown.bind(this) }
+              labelKey="text"
+              options={
+                choices
+              }
+              onInputChange={ this.onChange.bind(this) }
+              onChange={ this.onChange.bind(this) }
+            />
+          </article>
+        </Route>
+      </Switch>
     );
   }
 };
 
-export default Article;
+export default withRouter(Article);
