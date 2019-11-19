@@ -57,30 +57,49 @@ class Article extends React.Component {
   }
 
   render() {
-    const {nodeId, conversation} = this.props;
+    const {
+      route,
+      routeIndex,
+      conversation
+    } = this.props;
+    const routeIndexInt = parseInt(routeIndex, 10) || 0;
+    const routeArray = route.split('.').map(routeItem => parseInt(routeItem, 10));
     const getNodeById = id => conversation.nodes.find(node => node.id === id);
+    const thisNodeID = routeArray[routeIndexInt];
+    const thisNode = getNodeById(thisNodeID);
+
+    if (!thisNode) return <div>Node #{ thisNodeID } not found</div>;
+
+    const nextNodeID = routeArray[routeIndexInt+1];
     const getAuthorByNode = node => conversation.users.find(user => user.id === node.authorId);
-    const thisNode = getNodeById(nodeId);
-    const children = conversation.nodes.filter(node => node.parentId === thisNode.id && node.authorId === thisNode.authorId);
     const choices = conversation.nodes.filter(node => node.parentId === thisNode.id && node.authorId !== thisNode.authorId);
     const author = getAuthorByNode(thisNode);
 
     return (
-      <article style={{ color: "#"+author.color }} title={ author.name }>
-        { thisNode.text }
-        &nbsp;
-        <Typeahead
-          id="nope"
-          multiple={ false }
-          emptyLabel={ false }
-          onKeyDown={ this.onKeyDown.bind(this) }
-          labelKey="text"
-          options={
-            choices
-          }
-          onInputChange={ this.onChange.bind(this) }
-          onChange={ this.onChange.bind(this) }
-        />
+      <article
+        style={{ color: "#"+author.color }}
+        title={ author.name }
+      >
+        { thisNode.text } &nbsp;
+
+        {
+          nextNodeID ? <Article
+            route={ route }
+            routeIndex={ routeIndexInt + 1 }
+            conversation={ conversation }
+          /> : <Typeahead
+            id="nope"
+            multiple={ false }
+            emptyLabel={ false }
+            onKeyDown={ this.onKeyDown.bind(this) }
+            labelKey="text"
+            options={
+              choices
+            }
+            onInputChange={ this.onChange.bind(this) }
+            onChange={ this.onChange.bind(this) }
+          />
+        }
       </article>
     );
   }
