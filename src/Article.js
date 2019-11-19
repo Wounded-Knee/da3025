@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import { navigate } from "hookrouter";
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 class Article extends React.Component {
@@ -34,22 +35,11 @@ class Article extends React.Component {
   submitForm() {
     const submittedNode = this.getOrCreateNodeByText( this.state.inputString );
     console.log('Submitted: ', submittedNode);
+    navigate(this.props.route + '.' + submittedNode.id);
   }
 
   getOrCreateNodeByText(text) {
-    return this.getNodeByText(text) || this.createNode(text);
-  }
-
-  createNode(text) {
-    const newId = Math.max.apply( Math, this.props.conversation.nodes.map( node => node.id ) ) + 1;
-    const newNode = {
-      id: newId,
-      authorId: 1,
-      text: text,
-      parentId: this.props.nodeId,
-    };
-    this.props.conversation.nodes.push(newNode);
-    return newNode;
+    return this.getNodeByText(text) || this.props.createNode(text, this.props.nodeId);
   }
 
   getNodeByText(text) {
@@ -84,9 +74,8 @@ class Article extends React.Component {
 
         {
           nextNodeID ? <Article
-            route={ route }
+            { ...this.props }
             routeIndex={ routeIndexInt + 1 }
-            conversation={ conversation }
           /> : <Typeahead
             id="nope"
             multiple={ false }
