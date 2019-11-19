@@ -2,7 +2,7 @@ import React from 'react';
 import importedConversation from './conversation';
 import Article from './Article';
 import './App.css';
-import { useRoutes } from "hookrouter";
+import { useRoutes, A, navigate } from "hookrouter";
 const conversation = getConversation();
 
 function getConversation() {
@@ -34,13 +34,34 @@ function createNode(text, parentNodeId) {
   return newNode;
 }
 
+function copyJSON() {
+  /* Get the text field */
+  var copyText = document.getElementById("json");
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+}
+
 const routes = {
   "/": () => <h1>Nothing</h1>,
+  "/json": () => (
+    <textarea id="json" onClick={ copyJSON }>
+      { JSON.stringify(conversation,undefined,2) }
+    </textarea>
+  ),
+  "/reload": () => {
+    localStorage.removeItem('conversation');
+    navigate('/1000');
+  },
   "/:route": ({ route }) => <Article
     route={route}
     createNode={ createNode }
     conversation={conversation}
-  />
+  />,
 };
 
 function App() {
@@ -54,12 +75,19 @@ function App() {
         routeResult ||
         topLevelNodes.map(
           ( node, index) => <Article
+            route={ node.id }
             conversation={ conversation }
             createNode={ createNode }
             key={ index }
           />
         )
       }
+
+      <footer>
+        <A href="/json">JSON</A> |
+        <A href="/1000">Main</A> | 
+        <A href="/reload">Reload Data</A> | 
+      </footer>
     </main>
   );
 }
