@@ -1,17 +1,24 @@
 import React from 'react';
-import conversation from './conversation';
+import importedConversation from './conversation';
 import Article from './Article';
 import './App.css';
 import { useRoutes } from "hookrouter";
+const conversation = getConversation();
 
 function getConversation() {
   const localStorageConversation = localStorage.getItem("conversation");
   if (localStorageConversation) {
+    console.log('Load');
     return JSON.parse(localStorageConversation);
   } else {
-    localStorage.setItem("conversation", JSON.stringify(conversation));
-    return conversation;
+    saveConversation(importedConversation);
+    return importedConversation;
   }
+}
+
+function saveConversation(conversation) {
+  localStorage.setItem("conversation", JSON.stringify(conversation));
+  console.log('Saved');
 }
 
 function createNode(text, parentNodeId) {
@@ -23,6 +30,7 @@ function createNode(text, parentNodeId) {
     parentId: parentNodeId,
   };
   conversation.nodes.push(newNode);
+  saveConversation(conversation);
   return newNode;
 }
 

@@ -1,4 +1,4 @@
-const conversation = {
+const importedConversation = {
   defaultChildren: [
     { id: 0, continue: true },
     { id: 1, freeText: true },
@@ -19,4 +19,4 @@ const conversation = {
   ]
 };
 
-export default conversation;
+export default importedConversation;

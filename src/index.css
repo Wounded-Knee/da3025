@@ -21,6 +21,18 @@ main > article {
 	display: block;
 }
 
-main article .rbt-sr-status {
-	display: none;
+main article .reply {
+}
+
+main article .reply .rbt-sr-status {
+  display: none;
+}
+
+main article .reply .tag-cloud {
+  display: flex;
+  height: 14em;
+  width: 24em;
+}
+main article .reply .tag-cloud .tag-cloud-inner {
+  flex: 1;
 }
